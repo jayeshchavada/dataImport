@@ -19,7 +19,7 @@ $error_count = 0;
 
 $import_count = 0;
 
-$filepath = "master_files/FOLLOW_RegNo_9531_To_14647.csv";
+$filepath = "master_files/Follow_Data/FOLLOW_RegNo_1_5000.csv";
 
 $handle = fopen($filepath, "r");
 
@@ -36,7 +36,15 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 		continue;
 	}
 
-	$reg_no = $data[1];
+	$reg_no = getNewRegNo($data[1]);
+
+	$PatientDate	=	$data[2];
+
+	$PatientDate	=	date("Y-m-d H:i:s",strtotime($PatientDate));
+
+	// echo "<pre>";
+	// print_r($PatientDate);
+	// echo "</pre>";exit;
 
 	$complaints_id = array();
 
@@ -135,7 +143,7 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 
 	/////////////////////////////
 
-	$import="INSERT into PatientVisit(PatientRegistrationNo,ComplaintsId,PatientComments,Visit_Date) values('$reg_no','$complaints_id','$PatientComments','$Visit_Date')";
+	$import="INSERT into PatientVisit(PatientRegistrationNo,ComplaintsId,PatientComments,Visit_Date,created_at,updated_at) values('$reg_no','$complaints_id','$PatientComments','$Visit_Date','$PatientDate','$PatientDate')";
 	
 	// // // /////////////////////////////
 
@@ -163,8 +171,21 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 	// echo "<pre>";
 	// print_r($Visit_Date);	
 	// echo "</pre>";
-
 }
+
+function getNewRegNo($regi)
+{
+	include 'database.php';
+
+	$query = "SELECT RegistrationNo FROM patientregistration WHERE PatientRegistrationNo = '$regi' LIMIT 1";
+	
+	$query = mysqli_query($con,$query);
+
+	$newReg = mysqli_fetch_assoc($query);
+
+	return $newReg['RegistrationNo'];
+}
+
 $con->query("SET FOREIGN_KEY_CHECKS = 1");
 echo "<pre>";
 // print_r($comt_length);	

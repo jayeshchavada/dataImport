@@ -20,9 +20,11 @@ $import_count = 0;
 
 $loop_count = 0;
 
-$filepath = "master_files/PBNEW_24_8_18.csv";
+$filepath = "master_files/Follow_Data/PBNEW_2019_03_13.csv";
 
 $handle = fopen($filepath, "r");
+
+$AssignedOPDNumber = '6438';
 
 while (($data = fgetcsv($handle, 1000, ",")) !== FALSE)
 {
@@ -32,12 +34,20 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE)
 	{
 		continue;
 	}
+	
+	$reg_no = $data[2];
+
+	$regNo2	=	$data[0];
+
+	$PatientDate	=	$data[3];
+
+	$PatientDate	=	date("Y-m-d H:i:s",strtotime($PatientDate));
+
 	// echo "<pre>";
 	// print_r($data);
 	// echo "</pre>";exit;
-	$reg_no = $data[2];
 
-	$opd_no	=	$data[41];
+	$opd_no	=	trim($data[41]);
 
 	$RandomSuffix	=	mt_rand(1,999999);
 
@@ -53,7 +63,7 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE)
 
 	$gender = $data[14];
 
-	$email = $data[34];
+	$email = trim($data[34]);
 	
 	if($data[13] == '')
 	{
@@ -90,7 +100,7 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE)
 	}
 	else
 	{
-		$dob  = "$dob[0]-$dob[1]-$dob[2]";
+		$dob  = "$dob[1]-$dob[0]-$dob[2]";
 	}
 
 	///////////////////////////////////////
@@ -144,57 +154,13 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE)
 		}
 		else
 		{
-			$ContactNumber = "123456";
+			$ContactNumber = "1234567890";
 		}
-	}
-	
-
-		
-	if(strlen($data[30]) > 12 || strlen($data[33]) > 12 || strlen($data[36]) > 12)
-	{
-		$greater_contact_data = "INSERT into temp_contact_greater(RegistrationNo,Details) values('$reg_no','Number Discrepancy')";
-
-		// $query_one = mysqli_query($con_test,$greater_contact_data);
-
-		// 	    if(!$query_one)
-		// 	    {
-		// 	    	echo "<pre>";
-		// 	    	echo mysqli_error($con_test);
-		// 	    	echo "</pre>";
-		// 	    }
-
-	}
-	if (strlen($ContactNumber) < 10 && $ContactNumber != "123456")
-	{
-		$smaller_contact_data = "INSERT into temp_contact_smaller(RegistrationNo,Details) values('$reg_no','$ContactNumber')";
-
-		// $query_two = mysqli_query($con_test,$smaller_contact_data);
-
-		// 	    if(!$query_two)
-		// 	    {
-		// 	    	echo "<pre>";
-		// 	    	echo mysqli_error($con_test);
-		// 	    	echo "</pre>";
-		// 	    }
-	}
-	if ($ContactNumber == '123456')
-	{
-		$invalid_contact_data = "INSERT into temp_contact_invalid(RegistrationNo,Details) values('$reg_no','$ContactNumber')";
-
-		// $query_three = mysqli_query($con_test,$invalid_contact_data);
-
-		// 	    if(!$query_three)
-		// 	    {
-		// 	    	echo "<pre>";
-		// 	    	echo mysqli_error($con_test);
-		// 	    	echo "</pre>";
-		// 	    }
 	}
 
 	// echo "<pre>";
 	// print_r($FirstName);
 	// echo "</pre>";
-
 
 	$ContactNumber = preg_replace("/[^0-9]/", "", $ContactNumber);	
 
@@ -206,9 +172,17 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE)
 
 	/////////////////////////////
 
-	$import="INSERT into patientregistration(RegistrationNo,HospitalBranchId,OpdRegNo,RandomSuffix,FirstName,MiddleName,LastName,ContactNumber,AgeYear,AgeMonth,DateOfBirth,Gender,Email,Address) values('$reg_no','$HospitalBranchId','$opd_no','$RandomSuffix','$FirstName','$MiddleName','$LastName','$ContactNumber','$age_years','$age_months','$dob','$gender','$email','$address')";
-	
-	// /////////////////////////////
+	if($opd_no == '')
+	{
+		$import="INSERT into patientregistration(RegistrationNo,HospitalBranchId,OpdRegNo,RandomSuffix,PatientRegistrationNo,FirstName,MiddleName,LastName,ContactNumber,AgeYear,AgeMonth,DateOfBirth,Gender,Email,Address,created_at,updated_at) values('$reg_no','$HospitalBranchId','$AssignedOPDNumber','$RandomSuffix','$regNo2','$FirstName','$MiddleName','$LastName','$ContactNumber','$age_years','$age_months','$dob','$gender','$email','$address','$PatientDate','$PatientDate')";
+		$AssignedOPDNumber =  $AssignedOPDNumber - 1;
+	}
+	else
+	{
+		$import="INSERT into patientregistration(RegistrationNo,HospitalBranchId,OpdRegNo,RandomSuffix,PatientRegistrationNo,FirstName,MiddleName,LastName,ContactNumber,AgeYear,AgeMonth,DateOfBirth,Gender,Email,Address,created_at,updated_at) values('$reg_no','$HospitalBranchId','$opd_no','$RandomSuffix','$regNo2','$FirstName','$MiddleName','$LastName','$ContactNumber','$age_years','$age_months','$dob','$gender','$email','$address','$PatientDate','$PatientDate')";
+	}
+
+	///////////////////////////////
 
 	$query = $con->query($import);
 
@@ -218,16 +192,41 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE)
     }
     else
     {
-    	$error_count += 1;
-    	echo "<pre>";
-    	echo $reg_no;
-    	echo "<br>";
-    	echo mysqli_error($con);
-    	echo "</pre>";
-    }
+		if(mysqli_errno($con) == '1062')
+		{
+			$import="INSERT into patientregistration(RegistrationNo,HospitalBranchId,OpdRegNo,RandomSuffix,PatientRegistrationNo,FirstName,MiddleName,LastName,ContactNumber,AgeYear,AgeMonth,DateOfBirth,Gender,Email,Address,created_at,updated_at) values('$reg_no','$HospitalBranchId','$AssignedOPDNumber','$RandomSuffix','$regNo2','$FirstName','$MiddleName','$LastName','$ContactNumber','$age_years','$age_months','$dob','$gender','$email','$address','$PatientDate','$PatientDate')";
+			$query = $con->query($import);
 
-	echo mysqli_info($con);
+			if($query)
+			{
+				$import_count = $import_count + 1;	
+				$AssignedOPDNumber =  $AssignedOPDNumber - 1;
+			}
+			else
+			{
+				if(mysqli_errno($con) == '1062')
+				{
+					$import="INSERT into patientregistration(RegistrationNo,HospitalBranchId,OpdRegNo,RandomSuffix,PatientRegistrationNo,FirstName,MiddleName,LastName,ContactNumber,AgeYear,AgeMonth,DateOfBirth,Gender,Email,Address,created_at,updated_at) values('$reg_no','$HospitalBranchId','$AssignedOPDNumber','$RandomSuffix','$regNo2','$FirstName','$MiddleName','$LastName','$ContactNumber','$age_years','$age_months','$dob','$gender','$email','$address','$PatientDate','$PatientDate')";
+					$query = $con->query($import);
 
+					if($query)
+					{
+						$import_count = $import_count + 1;	
+						$AssignedOPDNumber =  $AssignedOPDNumber - 1;
+					}
+					else
+					{
+						$error_count += 1;
+						echo "<pre>";
+						echo $reg_no;
+						echo "<br>";
+						echo "Assigned: ".mysqli_error($con);
+						echo "</pre>";
+					}
+				}
+			}
+		}
+	}
 }
 $con->query("SET FOREIGN_KEY_CHECKS = 1");
 echo "imported count: ".$import_count;

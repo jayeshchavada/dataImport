@@ -15,8 +15,8 @@ $con->query("SET FOREIGN_KEY_CHECKS = 0");
 // mysqli_query($con,"TRUNCATE TABLE `PatientPhotoUpload`");
 
 //Path for demo convert of few patient
-$folderpath 		=	"/media/mkadam_admin/Transcend-Pune/tempDemo";
-$target_path 	=	 "/media/mkadam_admin/Transcend-Pune/demopath";
+$folderpath 		=	"/Volumes/Transcend-P/Compressed_Photos/001";
+$target_path 		=	 "/Volumes/Transcend-P/Converted_Photos/temp";
 
 //$folderpath = "/media/mkadam_admin/Transcend3/Rupali/Psoriasis-Patients-Photos";
 // $folderpath = "/media/mkadam_admin/Transcend-Pune/Priya"; //disk 2
@@ -31,11 +31,12 @@ echo "Script Started At: ".date("Y-m-d H:i:s");
 
 foreach ($folders as $key => $eachfolderfiles)
 {
-	if($process_count == 251)
+	if($process_count == 101)
 	{
 		echo "<br>"."Count Limit Reached at $process_count";
 		break;
 	}
+
 
 	$foldername = explode("/",$eachfolderfiles);
 
@@ -68,19 +69,19 @@ foreach ($folders as $key => $eachfolderfiles)
 		$new_foldername = $new_foldername[0]."_".$RandomSuffix;
 	}
 
-
-
 	$image_data = glob("$eachfolderfiles/*");
-
+	
 	foreach ($image_data as $keys => $values)
 	{
+		$val = exif_read_data($values);
+
 		$date_image = $path = array();
 
 		// if(is_dir($values))
 		// {	
-		// 	echo "<pre>";
-		// 	print_r($values);
-		// 	echo "</pre>";
+			// echo "<pre>";
+			// print_r($val['DateTimeOriginal']);
+			// echo "</pre>";
 		// 	//continue;
 		// }
 
@@ -88,27 +89,28 @@ foreach ($folders as $key => $eachfolderfiles)
 
 		$image_name	=	end($image_name);
 
-		$date_image = date("Y-m-d",filemtime($values));
+		$date_image = date("Y-m-d",strtotime($val['DateTimeOriginal']));
 
 		$path = $target_path."/".$new_foldername;
 
 		if(!is_dir($path))
 		{
-			mkdir($path,0777);
+			// chmod($path, 777);
+			mkdir($path,0777,true);
 		}
 
 		$new_path = $path."/patient_images";
 
 		if (!is_dir($new_path))
 		{
-			mkdir($new_path,0777);
+			mkdir($new_path,0777,true);
 		}
 
 		$date_path = $new_path."/".$date_image;
 
 		if(!is_dir($date_path))
 		{
-			mkdir($date_path,0777);
+			mkdir($date_path,0777,true);
 		}
 
 		if(is_dir($date_path))
@@ -126,7 +128,8 @@ foreach ($folders as $key => $eachfolderfiles)
 			// echo "<pre>";
 			// print_r($new_foldername);
 			// echo "</pre>";
-
+			$path_for_database_table = addslashes(mysqli_real_escape_string($con,$path_for_database_table));
+			
 			$query 	=	"INSERT IGNORE INTO PatientPhotoUpload (PatientRegistrationNo,PhotoUploadDate,PhotoPath) VALUES ('$reg_no','$date_image','$path_for_database_table')";
 
 			$queryRun = $con->query($query);
@@ -160,7 +163,7 @@ function get_reg_by_opd($opd)
 {
 	if($opd != '')
 	{
-		$filepath = "master_files/PBNEW_24_8_18.csv";
+		$filepath = "master_files/Follow_Data/PBNEW_2019_03_13.csv";
 
 		$handle = fopen($filepath, "r");
 

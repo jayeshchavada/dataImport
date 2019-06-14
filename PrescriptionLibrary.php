@@ -79,6 +79,12 @@ while($days_data = mysqli_fetch_assoc($days_query))
 
 //////////////////////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////////////////////////////////////////////////
+
 function get_remedy_id($remedy)
 {
 	$remedy = strtolower($remedy);
@@ -150,9 +156,11 @@ function get_remedy_id($remedy)
 			return $remedy;
 			exit;
 		}
-		if($remedy == 'sl' || $remedy == 's.l.' || $remedy == 's.l' || $remedy == 'sca-lac' || $remedy == 'sac lac' || $remedy == 'sac' || $remedy == 'saclrum' || $remedy == 's l ' || $remedy == 'sa-lac' || $remedy == '-sac-lact' || $remedy == 'saclac' || $remedy == 'phytum' || $remedy == 'sac lav' || $remedy =='sac-lactum' || $remedy == 'sac-lsc' || $remedy == 'sac-lax' || $remedy == 'sac-alc' || $remedy == 'sac-lacrtis' || $remedy == 'sac-lacv' || $remedy == 'saclac.....' || $remedy == 'sac-lac0'|| $remedy == 'sc-lac' || $remedy == 'sac-alb' || $remedy == 'sax-lax' || $remedy == 'sacr' || $remedy == 's-l-' || $remedy == 'sca-lact' || $remedy == 'xac-lac' || $remedy == 'saxc-lac' || $remedy == 'adsl' || strpos($remedy, 'sac') !== false || $remedy == 'sca-lav' || $remedy == 'sctes-lac' || $remedy == 'saqc-lac' || $remedy == 'swac-lac' || $remedy == 'sax-lac' || $remedy == 'sca--lac' || $remedy == 'sca=lac' || $remedy == 'sav-lac' || $remedy == 'scsa-lac' || $remedy == 'sl sabal' || $remedy == 'sc-lax' || $remedy == 'abel' || $remedy == 'abc' || $remedy == 'absin' || strpos($remedy, 'adsl') !== false || $remedy == 'no pudis' || $remedy == 'straia' || $remedy == 'insm' || $remedy == 'in sm' || $remedy == 'ddd' || $remedy == 'fgcffg' || $remedy == 'fh' || $remedy == 'ghh' || $remedy == 'gkj' || $remedy == 'hm' || $remedy == 'phytum' || $remedy == 'ps' || strpos($remedy, 'pseuts') !== false || $remedy == 'saal' || $remedy == 'hydrocotyle' || $remedy == 'hydrcotl' || $remedy == 'hydroc' || $remedy == 'phyttum' || $remedy == 'scalacv' || $remedy == 'sal' || $remedy == 'hshs' || $remedy == 'hydr' || $remedy == 'hy' || $remedy == 'sl bds' || $remedy == 'sdac-lac' || $remedy == 'hydrocot' || $remedy == 'saac-lac' || $remedy == 'hydroct' || $remedy == 'sasc-lac' || $remedy == 'phytumm' || $remedy == 'dac-lac' || $remedy == 'hydrocityle' || $remedy == 'hydro' || $remedy == 'hydrcot' || $remedy == 'bggg' || $remedy == 'savc-lac' || $remedy == 'ad' || $remedy == 'ad ps' || $remedy == 'adps' || $remedy == 'ps' || $remedy == 'rs' || $remedy == 'hydro-c' || $remedy == 'hydrc' || $remedy == 'hydrocotyle++' || $remedy == 'phytum++' || $remedy == 'sc-laca' || $remedy == 'hhh' || $remedy == 'ad-ps' || $remedy == 'asl' || $remedy == 'aad ps' || $remedy == 'ps  ad' || $remedy == 'pd' || $remedy == 'ps ad' || $remedy == 'ad ps -' || $remedy == 'saac-lsc' || $remedy == 'sac-cla') 
+		if($remedy == 'sl' || $remedy == 'sac-lac' || $remedy == 's.l.' || $remedy == 's.l' || $remedy == 'sca-lac' || $remedy == 'sac lac' || $remedy == 'sac' || $remedy == 'saclrum' || $remedy == 's l ' || $remedy == 'sa-lac' || $remedy == '-sac-lact' || $remedy == 'saclac' || $remedy == 'phytum' || $remedy == 'sac lav' || $remedy =='sac-lactum' || $remedy == 'sac-lsc' || $remedy == 'sac-lax' || $remedy == 'sac-alc' || $remedy == 'sac-lacrtis' || $remedy == 'sac-lacv' || $remedy == 'saclac.....' || $remedy == 'sac-lac0'|| $remedy == 'sc-lac' || $remedy == 'sac-alb' || $remedy == 'sax-lax' || $remedy == 'sacr' || $remedy == 's-l-' || $remedy == 'sca-lact' || $remedy == 'xac-lac' || $remedy == 'saxc-lac' || $remedy == 'adsl' || strpos($remedy, 'sac') !== false || $remedy == 'sca-lav' || $remedy == 'sctes-lac' || $remedy == 'saqc-lac' || $remedy == 'swac-lac' || $remedy == 'sax-lac' || $remedy == 'sca--lac' || $remedy == 'sca=lac' || $remedy == 'sav-lac' || $remedy == 'scsa-lac' || $remedy == 'sl sabal' || $remedy == 'sc-lax' || $remedy == 'abel' || $remedy == 'abc' || $remedy == 'absin' || strpos($remedy, 'adsl') !== false || $remedy == 'no pudis' || $remedy == 'straia' || $remedy == 'insm' || $remedy == 'in sm' || $remedy == 'ddd' || $remedy == 'fgcffg' || $remedy == 'fh' || $remedy == 'ghh' || $remedy == 'gkj' || $remedy == 'hm' || $remedy == 'phytum' || $remedy == 'ps' || strpos($remedy, 'pseuts') !== false || $remedy == 'saal' || $remedy == 'hydrocotyle' || $remedy == 'hydrcotl' || $remedy == 'hydroc' || $remedy == 'phyttum' || $remedy == 'scalacv' || $remedy == 'sal' || $remedy == 'hshs' || $remedy == 'hydr' || $remedy == 'hy' || $remedy == 'sl bds' || $remedy == 'sdac-lac' || $remedy == 'hydrocot' || $remedy == 'saac-lac' || $remedy == 'hydroct' || $remedy == 'sasc-lac' || $remedy == 'phytumm' || $remedy == 'dac-lac' || $remedy == 'hydrocityle' || $remedy == 'hydro' || $remedy == 'hydrcot' || $remedy == 'bggg' || $remedy == 'savc-lac' || $remedy == 'ad' || $remedy == 'ad ps' || $remedy == 'adps' || $remedy == 'ps' || $remedy == 'rs' || $remedy == 'hydro-c' || $remedy == 'hydrc' || $remedy == 'hydrocotyle++' || $remedy == 'phytum++' || $remedy == 'sc-laca' || $remedy == 'hhh' || $remedy == 'ad-ps' || $remedy == 'asl' || $remedy == 'aad ps' || $remedy == 'ps  ad' || $remedy == 'pd' || $remedy == 'ps ad' || $remedy == 'ad ps -' || $remedy == 'saac-lsc' || $remedy == 'sac-cla') 
 		{
-			$remedy = 'sac-lac';
+			$remedy = '55';
+			return $remedy;
+			exit;
 		}
 
 		if($remedy == 'hep.s' || $remedy == 'hep-s' || $remedy == 'hep-sulph' || $remedy == 'heps' || $remedy == 'hep+s')
@@ -252,11 +260,11 @@ function get_remedy_id($remedy)
 			$remedy = 'nux-vom';
 		}
 		 
-		if($remedy == 'ars.iod' || $remedy == 'ars.i' || $remedy == 'ars-iod' || $remedy == 'ars d' || $remedy == 'ars' || $remedy == 'arc' || $remedy == 'arsd' || $remedy == 'ars-i' || $remedy == 'ara' || $remedy == 'ars.' || $remedy == 'ars++' || $remedy == 'ars..' || $remedy == 'arrs-i' || $remedy == 'ars-ac')
+		if($remedy == 'ars.iod' || $remedy == 'ars.i' || $remedy == 'ars-iod' || $remedy == 'ars d'|| $remedy == 'arsd' || $remedy == 'ars-i' || $remedy == 'ara' || $remedy == 'arrs-i' || $remedy == 'ars-ac')
 		{
 			$remedy = 'ars-iod';
 		}
-		if(strpos($remedy,'a') !== false && strpos($remedy,'s') !== false && strpos($remedy,'i') !== false && strpos($remedy,'d') !== false)
+		if($remedy == 'ars.iod' || $remedy == 'ars.i' || $remedy == 'ars-iod' || $remedy == 'ars d' || $remedy == 'arsd' || $remedy == 'ars-i' || $remedy == 'arrs-i' || $remedy == 'ars-ac')
 		{
 			$remedy = 'ars-iod';
 		} 

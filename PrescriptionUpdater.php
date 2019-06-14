@@ -5,6 +5,7 @@
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 ini_set('display_errors', 'On');
 ini_set("memory_limit","3072M");
+set_time_limit(0);
 
 //////////////////////////////////
 
@@ -17,7 +18,7 @@ $insert_count = 0;
 
 $loop_count = 0;
 
-$filepath = "master_files/FOLLOW_RegNo_9531_To_14647.csv";
+$filepath = "master_files/Follow_Data/FOLLOW._RegNo_10001_15457.csv";
 
 $handle = fopen($filepath, "r");
 
@@ -43,7 +44,7 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 
 	$Visit_Date  = "$parts[2]-$parts[0]-$parts[1]";
 
-	$reg_no = $data[1];
+	$reg_no = getNewRegNo($data[1]);
 
 	$visit_id = mysqli_fetch_assoc($con->query("SELECT PatientVisitID FROM PatientVisit WHERE PatientRegistrationNo = '$reg_no' AND Visit_Date = '$Visit_Date' LIMIT 1"));
 
@@ -148,8 +149,11 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 			$repetition_2 = $repetition_1;
 		}
 
-		$insert_query = "INSERT INTO PatientVisitPrescriptionDetails (PatientRegistrationNo,VisitId,Remedy,Potency,Dosage,Repetition,Days,created_at) VALUES ('$reg_no','$visit_id','$remedy_1','$potency_1','$dosage_1','$repetition_1','$days','$current_date'), 
-		('$reg_no','$visit_id','$remedy_2','$potency_2','$dosage_2','$repetition_2','$days','$current_date')";
+		$PresCode_1 = GetPrescriptionCodeOnRemedyPotency($remedy_1,$potency_1);
+		$PresCode_2 = GetPrescriptionCodeOnRemedyPotency($remedy_2,$potency_2);
+
+		$insert_query = "INSERT INTO PatientVisitPrescriptionDetails (PatientRegistrationNo,VisitId,Remedy,Potency,PrescriptionCodeId,Dosage,Repetition,Days,created_at,updated_at) VALUES ('$reg_no','$visit_id','$remedy_1','$potency_1','$PresCode_1','$dosage_1','$repetition_1','$days','$current_date','$current_date'), 
+		('$reg_no','$visit_id','$remedy_2','$potency_2','$PresCode_2','$dosage_2','$repetition_2','$days','$current_date','$current_date')";
 
 		$insert = $con->query($insert_query);
 
@@ -195,9 +199,13 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 			$repetition_3 = $repetition_1;
 		}
 
-		$insert_query = "INSERT INTO PatientVisitPrescriptionDetails (PatientRegistrationNo,VisitId,Remedy,Potency,Dosage,Repetition,Days,created_at) VALUES ('$reg_no','$visit_id','$remedy_1','$potency_1','$dosage','$repetition_1','$days','$current_date'), 
-		('$reg_no','$visit_id','$remedy_2','$potency_2','$dosage_2','$repetition_2','$days','$current_date'),
-		('$reg_no','$visit_id','$remedy_3','$potency_3','$dosage_3','$repetition_3','$days','$current_date')";
+		$PresCode_1 = GetPrescriptionCodeOnRemedyPotency($remedy_1,$potency_1);
+		$PresCode_2 = GetPrescriptionCodeOnRemedyPotency($remedy_2,$potency_2);
+		$PresCode_3 = GetPrescriptionCodeOnRemedyPotency($remedy_3,$potency_3);
+
+		$insert_query = "INSERT INTO PatientVisitPrescriptionDetails (PatientRegistrationNo,VisitId,Remedy,Potency,PrescriptionCodeId,Dosage,Repetition,Days,created_at,updated_at) VALUES ('$reg_no','$visit_id','$remedy_1','$potency_1','$PresCode_1','$dosage','$repetition_1','$days','$current_date','$current_date'), 
+		('$reg_no','$visit_id','$remedy_2','$potency_2','$PresCode_2','$dosage_2','$repetition_2','$days','$current_date','$current_date'),
+		('$reg_no','$visit_id','$remedy_3','$potency_3','$PresCode_3','$dosage_3','$repetition_3','$days','$current_date','$current_date')";
 
 		$insert = $con->query($insert_query);
 
@@ -235,7 +243,9 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 		get_repetition_id(trim($repetition)) !== false ? $repetition = get_repetition_id(trim($repetition)) : $repetition = '';
 		get_dosage_id(trim($dosage)) !== false ? $dosage = get_dosage_id(trim($dosage)) : $dosage = '';
 
-		$insert_query = "INSERT INTO PatientVisitPrescriptionDetails (PatientRegistrationNo,VisitId,Remedy,Potency,Dosage,Repetition,Days,created_at) VALUES ('$reg_no','$visit_id','$remedy','$potency','$dosage','$repetition','$days','$current_date')";
+		$PresCode = GetPrescriptionCodeOnRemedyPotency($remedy,$potency);
+
+		$insert_query = "INSERT INTO PatientVisitPrescriptionDetails (PatientRegistrationNo,VisitId,Remedy,Potency,PrescriptionCodeId,Dosage,Repetition,Days,created_at,updated_at) VALUES ('$reg_no','$visit_id','$remedy','$potency','$PresCode','$dosage','$repetition','$days','$current_date','$current_date')";
 
 		$insert = $con->query($insert_query);
 
@@ -251,6 +261,39 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 		}
 	}
 }
+
+function getNewRegNo($regi)
+{
+	include 'database.php';
+
+	$query = "SELECT RegistrationNo FROM patientregistration WHERE PatientRegistrationNo = '$regi' LIMIT 1";
+	
+	$query = mysqli_query($con,$query);
+
+	$newReg = mysqli_fetch_assoc($query);
+
+	return $newReg['RegistrationNo'];
+}
+
+function GetPrescriptionCodeOnRemedyPotency($remedy,$potency)
+{
+	include 'database.php';
+	
+	$code_array = "SELECT * FROM PrescriptionCodeMaster";
+
+	$code_query = $con->query($code_array);
+
+	while($code_data = mysqli_fetch_assoc($code_query))
+	{
+		if($code_data['RemedyId'] == $remedy && $code_data['PotencyId'] == $potency)
+		{
+			return $code_data['PrescriptionCodeID'];
+			exit;
+		}
+	}	
+	return 0;
+}
+
 $con->query("SET FOREIGN_KEY_CHECKS = 1");
 echo "Statistics:";
 echo "<br>";
