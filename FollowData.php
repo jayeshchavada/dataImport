@@ -135,11 +135,7 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 
 	$comt_length += strlen($PatientComments); 
 
-	$Visit_Date = $data[2];
-
-	$parts = explode('/', $Visit_Date);
-
-	$Visit_Date  = "$parts[2]-$parts[0]-$parts[1]";
+	$Visit_Date = date("d-m-Y",strtotime($data[2]));
 
 	/////////////////////////////
 

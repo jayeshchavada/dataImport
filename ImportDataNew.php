@@ -53,6 +53,8 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE)
 
 	$HospitalBranchId = '2';
 
+	$initial	=	$data[4];
+
 	$FirstName = preg_replace("/[^a-zA-Z]/","",stripslashes($data[6]));
 
 	$MiddleName = preg_replace("/[^a-zA-Z]/","",stripslashes($data[7]));
@@ -90,19 +92,22 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE)
 
 	//////////////////////////////////////
 
-	$dob = $data[12];
+	$dob = date("d-m-Y",strtotime($data[12]));
 
-	$dob = explode('/', $dob);
+	// $dob = explode('/', $dob);
 
-	if(!isset($dob[0]) || !isset($dob[1]) || !isset($dob[2]))
-	{
-		$dob = '';
-	}
-	else
-	{
-		$dob  = "$dob[1]-$dob[0]-$dob[2]";
-	}
+	// if(!isset($dob[0]) || !isset($dob[1]) || !isset($dob[2]))
+	// {
+	// 	$dob = '';
+	// }
+	// else
+	// {
+	// 	$dob  = "$dob[1]-$dob[0]-$dob[2]";
+	// }
 
+	// echo "<pre>";
+	// print_r($dob);
+	// echo "</pre>";
 	///////////////////////////////////////
 
 	if(strlen($data[30]) > 9)
@@ -158,10 +163,6 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE)
 		}
 	}
 
-	// echo "<pre>";
-	// print_r($FirstName);
-	// echo "</pre>";
-
 	$ContactNumber = preg_replace("/[^0-9]/", "", $ContactNumber);	
 
 	$ContactNumber == '' ? $ContactNumber = 0 : $ContactNumber;
@@ -174,12 +175,12 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE)
 
 	if($opd_no == '')
 	{
-		$import="INSERT into patientregistration(RegistrationNo,HospitalBranchId,OpdRegNo,RandomSuffix,PatientRegistrationNo,FirstName,MiddleName,LastName,ContactNumber,AgeYear,AgeMonth,DateOfBirth,Gender,Email,Address,created_at,updated_at) values('$reg_no','$HospitalBranchId','$AssignedOPDNumber','$RandomSuffix','$regNo2','$FirstName','$MiddleName','$LastName','$ContactNumber','$age_years','$age_months','$dob','$gender','$email','$address','$PatientDate','$PatientDate')";
+		$import="INSERT into patientregistration(RegistrationNo,HospitalBranchId,OpdRegNo,RandomSuffix,PatientRegistrationNo,Initial,FirstName,MiddleName,LastName,ContactNumber,AgeYear,AgeMonth,DateOfBirth,Gender,Email,Address,created_at,updated_at) values('$reg_no','$HospitalBranchId','$AssignedOPDNumber','$RandomSuffix','$regNo2','$initial','$FirstName','$MiddleName','$LastName','$ContactNumber','$age_years','$age_months','$dob','$gender','$email','$address','$PatientDate','$PatientDate')";
 		$AssignedOPDNumber =  $AssignedOPDNumber - 1;
 	}
 	else
 	{
-		$import="INSERT into patientregistration(RegistrationNo,HospitalBranchId,OpdRegNo,RandomSuffix,PatientRegistrationNo,FirstName,MiddleName,LastName,ContactNumber,AgeYear,AgeMonth,DateOfBirth,Gender,Email,Address,created_at,updated_at) values('$reg_no','$HospitalBranchId','$opd_no','$RandomSuffix','$regNo2','$FirstName','$MiddleName','$LastName','$ContactNumber','$age_years','$age_months','$dob','$gender','$email','$address','$PatientDate','$PatientDate')";
+		$import="INSERT into patientregistration(RegistrationNo,HospitalBranchId,OpdRegNo,RandomSuffix,PatientRegistrationNo,Initial,FirstName,MiddleName,LastName,ContactNumber,AgeYear,AgeMonth,DateOfBirth,Gender,Email,Address,created_at,updated_at) values('$reg_no','$HospitalBranchId','$opd_no','$RandomSuffix','$regNo2','$initial','$FirstName','$MiddleName','$LastName','$ContactNumber','$age_years','$age_months','$dob','$gender','$email','$address','$PatientDate','$PatientDate')";
 	}
 
 	///////////////////////////////
@@ -194,7 +195,7 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE)
     {
 		if(mysqli_errno($con) == '1062')
 		{
-			$import="INSERT into patientregistration(RegistrationNo,HospitalBranchId,OpdRegNo,RandomSuffix,PatientRegistrationNo,FirstName,MiddleName,LastName,ContactNumber,AgeYear,AgeMonth,DateOfBirth,Gender,Email,Address,created_at,updated_at) values('$reg_no','$HospitalBranchId','$AssignedOPDNumber','$RandomSuffix','$regNo2','$FirstName','$MiddleName','$LastName','$ContactNumber','$age_years','$age_months','$dob','$gender','$email','$address','$PatientDate','$PatientDate')";
+			$import="INSERT into patientregistration(RegistrationNo,HospitalBranchId,OpdRegNo,RandomSuffix,PatientRegistrationNo,Initial,FirstName,MiddleName,LastName,ContactNumber,AgeYear,AgeMonth,DateOfBirth,Gender,Email,Address,created_at,updated_at) values('$reg_no','$HospitalBranchId','$AssignedOPDNumber','$RandomSuffix','$regNo2','$initial','$FirstName','$MiddleName','$LastName','$ContactNumber','$age_years','$age_months','$dob','$gender','$email','$address','$PatientDate','$PatientDate')";
 			$query = $con->query($import);
 
 			if($query)
@@ -206,7 +207,7 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE)
 			{
 				if(mysqli_errno($con) == '1062')
 				{
-					$import="INSERT into patientregistration(RegistrationNo,HospitalBranchId,OpdRegNo,RandomSuffix,PatientRegistrationNo,FirstName,MiddleName,LastName,ContactNumber,AgeYear,AgeMonth,DateOfBirth,Gender,Email,Address,created_at,updated_at) values('$reg_no','$HospitalBranchId','$AssignedOPDNumber','$RandomSuffix','$regNo2','$FirstName','$MiddleName','$LastName','$ContactNumber','$age_years','$age_months','$dob','$gender','$email','$address','$PatientDate','$PatientDate')";
+					$import="INSERT into patientregistration(RegistrationNo,HospitalBranchId,OpdRegNo,RandomSuffix,PatientRegistrationNo,Initial,FirstName,MiddleName,LastName,ContactNumber,AgeYear,AgeMonth,DateOfBirth,Gender,Email,Address,created_at,updated_at) values('$reg_no','$HospitalBranchId','$AssignedOPDNumber','$RandomSuffix','$regNo2','$initial','$FirstName','$MiddleName','$LastName','$ContactNumber','$age_years','$age_months','$dob','$gender','$email','$address','$PatientDate','$PatientDate')";
 					$query = $con->query($import);
 
 					if($query)

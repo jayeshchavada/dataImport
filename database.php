@@ -13,15 +13,15 @@ if(!$con)
 	echo "error connecting the database";
 }
 
-// $host = 'localhost';
-// $user = 'root';
-// $pass = 'pass';
-// $database = 'Test';
+$host = 'localhost';
+$user = 'root';
+$pass = 'pass';
+$database = 'DoSoft_DrRajendraSonawane_working';
 
-// $con_test = mysqli_connect($host,$user,$pass,$database);
+$con_working = mysqli_connect($host,$user,$pass,$database);
 
-// if(!$con_test)
-// {
-// 	echo "error connecting the database";
-// }
+if(!$con_working)
+{
+	echo "error connecting the database";
+}
 ?>

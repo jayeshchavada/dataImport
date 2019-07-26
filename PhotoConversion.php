@@ -130,7 +130,7 @@ foreach ($folders as $key => $eachfolderfiles)
 			// echo "</pre>";
 			$path_for_database_table = addslashes(mysqli_real_escape_string($con,$path_for_database_table));
 			
-			$query 	=	"INSERT IGNORE INTO PatientPhotoUpload (PatientRegistrationNo,PhotoUploadDate,PhotoPath) VALUES ('$reg_no','$date_image','$path_for_database_table')";
+			$query 	=	"INSERT IGNORE INTO PatientPhotoUpload (PatientRegistrationNo,PhotoUploadDate,PhotoPath,created_at,updated_at) VALUES ('$reg_no','$date_image','$path_for_database_table','$date_image','$date_image')";
 
 			$queryRun = $con->query($query);
 			
