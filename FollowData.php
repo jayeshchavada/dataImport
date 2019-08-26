@@ -9,7 +9,7 @@ set_time_limit(0);
 ini_set('max_input_time', 3600);
 
 //////////////////////////////////
-
+//including database file
 include_once 'database.php';
 
 $con->query("SET FOREIGN_KEY_CHECKS = 0");
